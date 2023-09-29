@@ -96,22 +96,28 @@ app.put("/fruits/:id", function (req, res) {
 //Assignment - Implement the delete endpoint
 //End code here.
 app.delete("/fruits/:id", function (req, res) {
-  // This will delete ONE item from this index. Need to find the index of the item first.
-  // Set up a indexCounter up since I'm passing the fruit ID, which isn't the same as the array index
-  let indexCounter = 0;
-  for (let fruit of fruits) {
-    if (fruit.id == req.params.id) {
-      //Delete the item at this fruit ID using fruit array index
-      fruits.splice(indexCounter, 1);
+  // This will delete the fruit found at THIS ID (not array index). Need to find the index of the item first.
+  console.log("Request param ID: " + req.params.id);
 
-      fruit.name = req.body.name;
+  // Make sure an fruit ID was sent
+  if (req.params.id !== undefined) {
+
+    // Find the array index for this 'fruit ID'
+    var findex = fruits.findIndex((f) => f.id == req.params.id);
+    // console.log("findex: " + findex);
+
+    // If it found the index for the passed ID, then delete it
+    if (findex != -1) {
+      // do this
+      fruits.splice(findex, 1);
       res.status(200);
       return res.send("Delete successful");
     }
-    indexCounter++;  
+
+    // If it didn't find the index for the passed ID, then send error message
+    res.status(404);
+    res.send("Fruit not found");
   }
-  res.status(404);
-  res.json(newFruit);
 });
 
 app.listen(port, () => {
